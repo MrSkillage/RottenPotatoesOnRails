@@ -7,24 +7,28 @@ class MoviesController < ApplicationController
   end
 
   def index    
+    # Declare Varibles from Movies and Params
     @all_ratings = Movie.all_ratings  
     @ratings = params[:ratings]
-      
+    @sorted = params[:sorted]
+    
+    # Makes @ratings a new hash and fills key with each @all_rating and value as 1.
     if (@ratings == nil)
       @ratings = Hash.new
       @all_ratings.each do |rating|
         @ratings[rating] = 1
       end
     end
-   
     @ratings_to_show = @ratings
-      
-    if (@ratings != nil)
-      @movies = Movie.with_ratings(@ratings.keys)
+    
+    # Makes sure page loads correctly depending on params: ratings & sorted
+    if (@sorted != nil && @ratings != nil)
+      @movies = Movie.with_ratings_sorted(@ratings, @sorted)
+    elsif (@ratings != nil)
+      @movies = Movie.with_ratings(@ratings)
     else
       @movies = Movie.all 
     end
-    
   end
 
   def new
