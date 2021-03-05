@@ -6,23 +6,24 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
-  def index
+  def index    
     @all_ratings = Movie.all_ratings  
-    
-    if (params[:ratings] == nil)
-      savedRatings = ''
-    else
-      savedRatings = params[:ratings]
-    end
-    @ratings_to_show = savedRatings
-    
-    @movies = Movie.with_ratings(
-      if (params[:ratings] == nil) 
-        ['']
-      else
-        params[:ratings].keys
+    @ratings = params[:ratings]
+      
+    if (@ratings == nil)
+      @ratings = Hash.new
+      @all_ratings.each do |rating|
+        @ratings[rating] = 1
       end
-    )
+    end
+   
+    @ratings_to_show = @ratings
+      
+    if (@ratings != nil)
+      @movies = Movie.with_ratings(@ratings.keys)
+    else
+      @movies = Movie.all 
+    end
     
   end
 
