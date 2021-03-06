@@ -12,6 +12,26 @@ class MoviesController < ApplicationController
     @ratings = params[:ratings]
     @sorted = params[:sorted]
     
+    # Saves the session cookies for params[:ratings]
+    if (params[:sorted] != nil)
+      @sorted = params[:sorted]
+      session[:sorted] = @sorted
+    elsif (session[:sorted] != nil)
+      @sorted = session[:session]
+    else
+      @sorted = nil
+    end
+    
+    #Saves the session cookies for params[:ratings]
+    if (params[:ratings] != nil)
+      @ratings = params[:ratings]
+      session[:ratings] = @ratings
+    elsif (session[:ratings] != nil)
+      @ratings = session[:ratings]
+    else
+      @ratings = nil
+    end
+    
     # Makes @ratings a new hash and fills key with each @all_rating and value as 1.
     if (@ratings == nil)
       @ratings = Hash.new
@@ -26,6 +46,8 @@ class MoviesController < ApplicationController
       @movies = Movie.with_ratings_sorted(@ratings, @sorted)
     elsif (@ratings != nil)
       @movies = Movie.with_ratings(@ratings)
+    elsif (@sorted != nil)
+      @movies = Movie.all.order(@sorted)
     else
       @movies = Movie.all 
     end
