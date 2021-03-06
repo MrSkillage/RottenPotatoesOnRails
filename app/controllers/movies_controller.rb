@@ -14,32 +14,32 @@ class MoviesController < ApplicationController
     
     # Saves the session cookies for params[:ratings]
     if (params[:sorted] != nil)
-      @sorted = params[:sorted]
-      session[:sorted] = @sorted
-    elsif (session[:sorted] != nil)
-      @sorted = session[:session]
+      session[:sorted] = params[:sorted]
     else
-      @sorted = nil
+      redirector = true
     end
+    
+    # Sets @sorted to session cookies or uses blank ''
+    session[:sorted] = session[:sorted] || '' 
+    @sorted = session[:sorted]
     
     #Saves the session cookies for params[:ratings]
     if (params[:ratings] != nil)
-      @ratings = params[:ratings]
-      session[:ratings] = @ratings
-    elsif (session[:ratings] != nil)
-      @ratings = session[:ratings]
+      session[:ratings] = params[:ratings]
     else
-      @ratings = nil
-    end
-    
-    # Makes @ratings a new hash and fills key with each @all_rating and value as 1.
-    if (@ratings == nil)
       @ratings = Hash.new
       @all_ratings.each do |rating|
         @ratings[rating] = 1
       end
     end
+    
+    # Sets @ratings to session cookies or uses Hash.map to fill @ratings
+    session[:ratings] = session[:ratings] || Hash[@all_ratings.map {|rating| [rating, 1]}]
+    @ratings = session[:ratings]
     @ratings_to_show = @ratings
+    
+    # Use redirect_to to redirect page
+    # https://api.rubyonrails.org/v6.1.0/classes/ActionController/Redirecting.html
     
     # Makes sure page loads correctly depending on params: ratings & sorted
     if (@sorted != nil && @ratings != nil)
@@ -51,6 +51,7 @@ class MoviesController < ApplicationController
     else
       @movies = Movie.all 
     end
+    
   end
 
   def new
