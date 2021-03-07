@@ -7,13 +7,13 @@ class MoviesController < ApplicationController
   end
 
   def index    
-    # Declare Varibles from Movies and Params
+    # Variable Delcaration 
     @all_ratings = Movie.all_ratings  
     @ratings = params[:ratings]
     @sorted = params[:sorted]
     redirector = false;
     
-    # Saves the session cookies for params[:ratings]
+    # Saves the session cookies from params[:sorted], fails redirects user
     if (params[:sorted] != nil)
       session[:sorted] = params[:sorted]
     else
@@ -24,7 +24,8 @@ class MoviesController < ApplicationController
     session[:sorted] = session[:sorted] || '' 
     @sorted = session[:sorted]
     
-    #Saves the session cookies for params[:ratings]
+    #Saves the session cookies for params[:ratings], 
+    #fails redirects user creates new Hash
     if (params[:ratings] != nil)
       session[:ratings] = params[:ratings]
     else
